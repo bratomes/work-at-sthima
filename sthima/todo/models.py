@@ -11,7 +11,6 @@ class Task(models.Model):
     done = models.BooleanField(default=False)
     archived = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
-    owner = models.ForeignKey(User)
 
     def __str__(self):
         """
