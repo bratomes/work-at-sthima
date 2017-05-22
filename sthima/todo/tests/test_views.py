@@ -17,6 +17,6 @@ class TodoTest(TestCase):
         """
         Test of todo page view
         """
-        response = self.client.get('/todo-list')
+        response = self.client.get('/todo-list/')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'todo/todo.html')
