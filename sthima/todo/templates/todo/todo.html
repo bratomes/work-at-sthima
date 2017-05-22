@@ -1,0 +1,30 @@
+{% extends 'todo/base.html' %}
+
+<!-- page title -->
+{% block page-title %}ToDo List | {{ block.super }}{% endblock %}
+
+<!-- main content -->
+{% block main-content %}
+<section id="todolist">
+    <ul class="collection">
+        <li class="collection-item" v-for="task in tasks">[[ task.description ]]</li>
+    </ul>
+</section>
+{% endblock %}
+
+{% block extra-js %}
+<script type="text/javascript">
+    var data = { tasks: [] }
+    var todolist = new Vue({
+        delimiters: ['[[', ']]'],
+        el: '#todolist',
+        data: {
+            tasks: []
+        },
+        mounted() {
+            axios.get('http://localhost:8000/v1/tasks/')
+                .then(response => { this.tasks = response.data })
+        }
+    })
+</script>
+{% endblock %}
