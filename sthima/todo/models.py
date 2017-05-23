@@ -6,7 +6,6 @@ class Task(models.Model):
     """
     Stores a single task, related to :model:`auth.User`
     """
-    position = models.IntegerField()
     description = models.CharField(max_length=80)
     done = models.BooleanField(default=False)
     archived = models.BooleanField(default=False)
