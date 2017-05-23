@@ -2,6 +2,10 @@
     width: 100px;
 }
 
+#todolist .collection .row {
+    margin-bottom: 0 !important;
+}
+
 /* Form style */
 
 input:not([type]),

@@ -10,20 +10,39 @@
         <li class="collection-item"
             v-for="(task, index) in tasks"
             v-bind:key="task.id">
-            <a v-on:click="doneTask(index, task.id, task.description)" v-if="!task.done" href="#">
-                <i class="material-icons left grey-text text-lighten-1">check_box_outline_blank</i>
-            </a>
-            <a v-on:click="undoneTask(index, task.id, task.description)" v-if="task.done" href="#">
-                <i class="material-icons left green-text text-lighten-1">check_box</i>
-            </a>
-            [[ task.description ]]
-            <a v-on:click="deleteTask(index, task.id)" href="#">
-                <i class="material-icons right grey-text text-lighten-1">delete</i>
-            </a>
+
+            <div class="row">
+
+                <div class="col m1">
+                    <a v-on:click="doneTask(index, task.id, task.description)" v-if="!task.done" href="#">
+                        <i class="material-icons left grey-text text-lighten-1">check_box_outline_blank</i>
+                    </a>
+                    <a v-on:click="undoneTask(index, task.id, task.description)" v-if="task.done" href="#">
+                        <i class="material-icons left green-text text-lighten-1">check_box</i>
+                    </a>
+                </div>
+
+                <div class="col m8">
+                    <div contenteditable="true" v-on:keyup="edit = true" v-on:blur="edit = true" v-on:paste="edit = true" v-on:delete="edit = true" v-on:focus="edit = true">
+                        [[ task.description ]]
+                    </div>
+                </div>
+
+                <div class="col m3">
+                    <a v-on:click="deleteTask(index, task.id)" href="#">
+                        <i class="material-icons right grey-text text-lighten-1">delete</i>
+                    </a>
+                    <a v-on:click="editTask(index, task.description)" href="#" v-if="edit">
+                        <i class="material-icons right grey-text text-lighten-1">save</i>
+                    </a>
+                </div>
+
+            </div>
+
         </li>
     </ul>
 
-    <div class="" v-if="show">
+    <div v-if="add">
         <input class="white save" v-model="description" placeholder="Digite uma tarefa">
         <button type="button" class="btn waves-effect blue darken-4" v-on:click="addTask(description)">Salvar</button>
         <button type="button" class="btn waves-effect red darken-2" v-on:click="activeTask()">Cancelar</button>
@@ -43,7 +62,8 @@
         data: {
             tasks: [],
             description: '',
-            show: false,
+            add: false,
+            edit: false,
             active: true
         },
         mounted() {
@@ -51,7 +71,7 @@
         },
         methods: {
             activeTask: function() {
-                this.show = !this.show
+                this.add = !this.add
                 this.active = !this.active
             },
             doneTask: function(index, id, description) {
@@ -71,7 +91,7 @@
                 axios.post('/v1/tasks/', { description: description }, { xsrfCookieName: 'csrftoken', xsrfHeaderName: 'X-CSRFToken' })
                 this.description = ''
             },
-            editTask: function(description) {
+            editTask: function() {
 
             }
         }
