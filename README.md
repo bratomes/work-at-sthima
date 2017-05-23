@@ -6,11 +6,11 @@
 ## Construindo o ambiente
 `pip install -r requirements.txt`
 
-Renomear o arquivo .env.example e adicionar uma SECRET_KEY
+Renomear o arquivo .env.example e adicionar uma SECRET_KEY.
 
-Criar as tabelas do banco de dados
+Criar as tabelas do banco de dados:
 `./manage makemigrations`
 `./manage migrate`
 
-Executar localmente
+Executar localmente:
 `./manage runserver`
