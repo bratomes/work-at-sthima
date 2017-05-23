@@ -10,31 +10,69 @@
         <li class="collection-item"
             v-for="(task, index) in tasks"
             v-bind:key="task.id">
+            <a v-on:click="doneTask(index, task.id, task.description)" v-if="!task.done" href="#">
+                <i class="material-icons left grey-text text-lighten-1">check_box_outline_blank</i>
+            </a>
+            <a v-on:click="undoneTask(index, task.id, task.description)" v-if="task.done" href="#">
+                <i class="material-icons left green-text text-lighten-1">check_box</i>
+            </a>
             [[ task.description ]]
             <a v-on:click="deleteTask(index, task.id)" href="#">
                 <i class="material-icons right grey-text text-lighten-1">delete</i>
             </a>
         </li>
     </ul>
-    <button type="button" class="btn waves-effect blue darken-4" v-on:click="addTask()">Adicionar Tarefa</button>
+
+    <div class="" v-if="show">
+        <input class="white save" v-model="description" placeholder="Digite uma tarefa">
+        <button type="button" class="btn waves-effect blue darken-4" v-on:click="addTask(description)">Salvar</button>
+        <button type="button" class="btn waves-effect red darken-2" v-on:click="activeTask()">Cancelar</button>
+    </div>
+
+    <button type="button" v-if="active" class="btn waves-effect blue darken-4" v-on:click="activeTask()">Adicionar Tarefa</button>
 </section>
 {% endblock %}
 
 {% block extra-js %}
 <script type="text/javascript">
+    Vue.component('todo-item')
+
     var todolist = new Vue({
         delimiters: ['[[', ']]'],
         el: '#todolist',
         data: {
             tasks: [],
+            description: '',
+            show: false,
+            active: true
         },
         mounted() {
             axios.get('/v1/tasks/').then(response => { this.tasks = response.data })
         },
         methods: {
+            activeTask: function() {
+                this.show = !this.show
+                this.active = !this.active
+            },
+            doneTask: function(index, id, description) {
+                this.tasks[index].done = true
+                axios.put('/v1/tasks/' + id + '/', { description: description, done: true }, { xsrfCookieName: 'csrftoken', xsrfHeaderName: 'X-CSRFToken' })
+            },
+            undoneTask: function(index, id, description) {
+                this.tasks[index].done = false
+                axios.put('/v1/tasks/' + id + '/', { description: description, done: false }, { xsrfCookieName: 'csrftoken', xsrfHeaderName: 'X-CSRFToken' })
+            },
             deleteTask: function(index, id) {
                 this.tasks.splice(index, 1)
                 axios.delete('/v1/tasks/' + id + '/', { xsrfCookieName: 'csrftoken', xsrfHeaderName: 'X-CSRFToken' })
+            },
+            addTask: function(description) {
+                this.tasks.push({ description: description })
+                axios.post('/v1/tasks/', { description: description }, { xsrfCookieName: 'csrftoken', xsrfHeaderName: 'X-CSRFToken' })
+                this.description = ''
+            },
+            editTask: function(description) {
+
             }
         }
     })
