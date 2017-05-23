@@ -9,8 +9,10 @@
 Renomear o arquivo .env.example e adicionar uma SECRET_KEY.
 
 Criar as tabelas do banco de dados:
-`./manage makemigrations`
 `./manage migrate`
 
-Executar localmente:
+Executar localmente o servidor:
 `./manage runserver`
+
+Acessar a url:
+`http://localhost:8000/todo-list/`
