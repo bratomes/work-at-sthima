@@ -6,24 +6,36 @@
 <!-- main content -->
 {% block main-content %}
 <section id="todolist">
-    <ul class="collection">
-        <li class="collection-item" v-for="task in tasks">[[ task.description ]]</li>
+    <ul class="collection" v-show="tasks">
+        <li class="collection-item"
+            v-for="(task, index) in tasks"
+            v-bind:key="task.id">
+            [[ task.description ]]
+            <a v-on:click="deleteTask(index, task.id)" href="#">
+                <i class="material-icons right grey-text text-lighten-1">delete</i>
+            </a>
+        </li>
     </ul>
+    <button type="button" class="btn waves-effect blue darken-4" v-on:click="addTask()">Adicionar Tarefa</button>
 </section>
 {% endblock %}
 
 {% block extra-js %}
 <script type="text/javascript">
-    var data = { tasks: [] }
     var todolist = new Vue({
         delimiters: ['[[', ']]'],
         el: '#todolist',
         data: {
-            tasks: []
+            tasks: [],
         },
         mounted() {
-            axios.get('http://localhost:8000/v1/tasks/')
-                .then(response => { this.tasks = response.data })
+            axios.get('/v1/tasks/').then(response => { this.tasks = response.data })
+        },
+        methods: {
+            deleteTask: function(index, id) {
+                this.tasks.splice(index, 1)
+                axios.delete('/v1/tasks/' + id + '/', { xsrfCookieName: 'csrftoken', xsrfHeaderName: 'X-CSRFToken' })
+            }
         }
     })
 </script>
